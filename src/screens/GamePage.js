@@ -1,112 +1,231 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { RED, GREEN, BLUE, YELLOW } from '../colors/base';
+import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
+import { default as Sound } from 'react-native-sound';
 import styles from '../styles/screens/GamePage';
 
 class GamePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      strictmode: false,
+      strict: false,
       activemode: false,
+      currentLevel: '--'
+    };
+    this.INDEX = {
+      1: 1,
+      2: 2,
+      3: 3,
+      4: 4
+    };
+    this.animations = {
+      1: new Animated.Value(1),
+      2: new Animated.Value(1),
+      3: new Animated.Value(1),
+      4: new Animated.Value(1)
+    };
+    this.game = {
       levelCount: 0,
-      btnbackground: YELLOW,
-      btnbackgroundBlue: BLUE,
-      btnbackgroundRed: RED,
-      btnbackgroundGreen: GREEN
+      currentGame: [],
+      player: [],
+      // strict: false
     };
   }
+
 onPressStrict() {
   if (this.state.strictmode) {
     this.setState({
-      strictmode: false
+      strict: false
     });
   } else {
     this.setState({
-      strictmode: true
+      strict: true
     });
   }
 }
-touchColorGreen() {
-  this.setState({
-    btnbackgroundGreen: 'green'
-  });
-  setTimeout(() => this.setState({
-    btnbackgroundGreen: GREEN
-  }), 250);
+
+onPressclickableView(index) {
+  // console.log('pressed');
+  this.animateView(index);
+  this.addToPlayer(index);
 }
-touchColorRed() {
-  this.setState({
-    btnbackgroundRed: 'green'
-  });
-  setTimeout(() => this.setState({
-    btnbackgroundRed: RED
-  }), 250);
+
+addToPlayer(Index) {
+  this.game.player.push(Index);
+  console.log('The current value of the player array: ', this.game.player);
+  this.playerTurn(Index);
 }
-touchColorBlue() {
-  this.setState({
-    btnbackgroundBlue: 'green'
-  });
-  setTimeout(() => this.setState({
-    btnbackgroundBlue: BLUE
-  }), 250);
+playerTurn(index) {
+  const newthis = this;
+  if (this.game.player[this.game.player.length - 1] !== this.game.currentGame[this.game.player.length - 1]) {
+    if (this.state.strict) {
+      Alert.alert('Strict mode on.. Start Again!');
+      this.gameStart();
+    } else {
+      Alert.alert('Sorry wrong move! Try again');
+      setTimeout(() => newthis.showMoves(), 3000);
+    }
+  } else {
+    console.log('Correct move...');
+    this.playSound(index);
+    if (this.game.player.length === this.game.currentGame.length) {
+      if (this.game.levelCount === 20) {
+        Alert.alert('You Win!!');
+      } else {
+        this.nextLevel();
+      }
+    }
+  }
 }
-touchColorYellow(e) {
-  console.log(e);
-  console.log(this);
-  this.setState({
-    btnbackground: 'green'
+
+playSound(index) {
+  let s;
+  console.log('sound function');
+  if (index === 1) {
+    s = new Sound('boom1.wav', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('error', error);
+        return;
+      }
+      s.play(() => {
+        s.release();
+      });
+    });
+  } else if (index === 2) {
+    s = new Sound('clap2.wav', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('error', error);
+        return;
+      }
+      s.play(() => {
+        s.release();
+      });
+    });
+  } else if (index === 3) {
+    s = new Sound('hihat3.wav', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('error', error);
+        return;
+      }
+      s.play(() => {
+        s.release();
+      });
+    });
+  } else if (index === 4) {
+  s = new Sound('kick4.wav', Sound.MAIN_BUNDLE, (error) => {
+    if (error) {
+      console.log('error', error);
+      return;
+    }
+    s.play(() => {
+      s.release();
+    });
   });
-  setTimeout(() => this.setState({
-    btnbackground: YELLOW
-  }), 250);
+} else {
+  Alert.alert('Sound Not found');
 }
+}
+animateView(Index) {
+  // console.log('animate');
+    Animated.sequence([
+      Animated.timing(
+        this.animations[Index],
+        {
+          toValue: 0,
+          duration: 5,
+        }
+      ),
+      Animated.timing(
+        this.animations[Index],
+        {
+          toValue: 1,
+          duration: 5,
+        }
+      ),
+    ]).start();
+    this.playSound(Index);
+  }
+
+  gameStart() {
+    this.clearGame();
+  }
+
+  clearGame() {
+    console.log('clear Game');
+    this.game = {
+      levelCount: 0,
+      currentGame: [],
+      player: [],
+      // strict: false
+    };
+    this.setState({
+      levelCount: '--'
+    });
+    this.increaseLevel();
+  }
+  increaseLevel() {
+    let currentLevel = ++this.game.levelCount;
+    this.setState({ currentLevel });
+    console.log(currentLevel);
+    this.generateRandom();
+  }
+  nextLevel() {
+    this.increaseLevel();
+  }
+  generateRandom() {
+    const mythis = this;
+    this.game.currentGame.push(Math.floor(Math.random() * (4)) + 1);
+    console.log(this.game.currentGame);
+    setTimeout(() => {
+      mythis.showMoves();
+    }, 1500);
+  }
+  showMoves() {
+    // Let us show the moves to the user.
+    console.log('The moves of the current Game: ', this.game.currentGame);
+    let i = 0;
+    let moves = setInterval(() => {
+      this.animateView(this.game.currentGame[i]);
+      i++;
+      if (i >= this.game.currentGame.length) {
+        clearInterval(moves);
+      }
+    }, 600);
+    // Clearing the past moves of the user.
+    this.clearPlayer();
+  }
+
+  clearPlayer() {
+    this.game.player = [];
+  }
   render() {
     return (
       <View style={styles.gamePageContainer}>
         <View elevation={5} style={styles.wrapper}>
           <View style={styles.innerWrapper}>
             <View style={styles.flexRow}>
-              <TouchableOpacity
-                id={1}
-                style={[styles.clickable,
-                   { backgroundColor: this.state.btnbackgroundGreen },
-                   styles.topLeftR]}
-                 onPress={this.touchColorGreen.bind(this)}
-              />
-              <TouchableOpacity
-                id={2}
-                style={[styles.clickable,
-                  { backgroundColor: this.state.btnbackgroundRed },
-                  styles.topRightR]}
-                onPress={this.touchColorRed.bind(this)}
-              />
+              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[1])} style={[styles.topLeftR, styles.red]}>
+                <Animated.View style={[styles.clickable, styles.topLeftR, styles.red, { opacity: this.animations[1] }]} />
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.topRightR, styles.green]} onPress={() => this.onPressclickableView(this.INDEX[2])}>
+                <Animated.View style={[styles.clickable, styles.topRightR, styles.green, { opacity: this.animations[2] }]} />
+              </TouchableOpacity>
             </View>
             <View style={styles.flexRow}>
-              <TouchableOpacity
-               id={3}
-               style={[styles.clickable,
-                  { backgroundColor: this.state.btnbackgroundBlue },
-                  styles.bottomLeftR]}
-                  onPress={this.touchColorBlue.bind(this)}
-              />
-              <TouchableOpacity
-               id={4}
-               data-key='4'
-               style={[styles.clickable,
-                  { backgroundColor: this.state.btnbackground },
-                  styles.bottomRightR]}
-                  onPress={this.touchColorYellow.bind(this)}
-              />
+              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[3])} style={[styles.bottomLeftR, styles.blue]}>
+                <Animated.View style={[styles.clickable, styles.bottomLeftR, styles.blue, { opacity: this.animations[3] }]} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[4])} style={[styles.bottomRightR, styles.yellow]}>
+                <Animated.View style={[styles.clickable, styles.bottomRightR, styles.yellow, { opacity: this.animations[4] }]} />
+              </TouchableOpacity>
             </View>
           </View>
 
-          <Text style={[styles.countText, styles.center]}>--</Text>
+          <Text style={[styles.countText, styles.center]}>{this.state.currentLevel}</Text>
 
         </View>
         <View style={[styles.gameController, styles.flexRow]}>
           <View style={styles.start}>
-            <TouchableOpacity style={[styles.cotrollerButton, styles.green]}>
+            <TouchableOpacity style={[styles.cotrollerButton, styles.green]} onPress={this.gameStart.bind(this)}>
               <Text style={styles.btnText}>START</Text>
             </TouchableOpacity>
           </View>
@@ -114,13 +233,12 @@ touchColorYellow(e) {
           <TouchableOpacity style={[styles.cotrollerButton, styles.yellow]} onPress={this.onPressStrict.bind(this)}>
             <Text style={styles.btnText}>STRICT</Text>
           </TouchableOpacity>
-          <View style={[styles.strictLed, this.state.strictmode ? styles.ledOn : styles.ledOff]} />
+          <View style={[styles.strictLed, this.state.strict ? styles.ledOn : styles.ledOff]} />
           </View>
         </View>
       </View>
     );
   }
 }
-
 
 export default GamePage;

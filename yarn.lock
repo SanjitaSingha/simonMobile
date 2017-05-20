@@ -3479,6 +3479,10 @@ react-devtools-core@^2.0.8:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-sound@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/react-native-sound/-/react-native-sound-0.10.1.tgz#c6afa5114cea6e39f479a2c67d6d843894ed745c"
+
 react-native@0.44.0:
   version "0.44.0"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.44.0.tgz#06427a30053f2d555c60fe0b9afcc6c778db09de"
