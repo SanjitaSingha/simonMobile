@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, Alert, TouchableWithoutFeedback } from 'react-native';
 import { default as Sound } from 'react-native-sound';
 import styles from '../styles/screens/GamePage';
 
@@ -131,14 +131,14 @@ animateView(Index) {
         this.animations[Index],
         {
           toValue: 0.4,
-          duration: 5,
+          duration: 100,
         }
       ),
       Animated.timing(
         this.animations[Index],
         {
           toValue: 1,
-          duration: 5,
+          duration: 100,
         }
       ),
     ]).start();
@@ -184,7 +184,7 @@ animateView(Index) {
     console.log('The moves of the current Game: ', this.game.currentGame);
     let i = 0;
     let moves = setInterval(() => {
-      this.animateView(this.game.currentGame[i]);
+      this.(this.game.currentGame[i]);
       i++;
       if (i >= this.game.currentGame.length) {
         clearInterval(moves);
@@ -203,20 +203,20 @@ animateView(Index) {
         <View elevation={5} style={styles.wrapper}>
           <View style={styles.innerWrapper}>
             <View style={styles.flexRow}>
-              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[1])} style={styles.topLeftR}>
+              <TouchableWithoutFeedback onPress={() => this.onPressclickableView(this.INDEX[1])} style={styles.topLeftR}>
                 <Animated.View style={[styles.clickable, styles.topLeftR, styles.red, { opacity: this.animations[1] }]} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.topRightR} onPress={() => this.onPressclickableView(this.INDEX[2])}>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback style={styles.topRightR} onPress={() => this.onPressclickableView(this.INDEX[2])}>
                 <Animated.View style={[styles.clickable, styles.topRightR, styles.green, { opacity: this.animations[2] }]} />
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
             <View style={styles.flexRow}>
-              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[3])} style={styles.bottomLeftR}>
+              <TouchableWithoutFeedback onPress={() => this.onPressclickableView(this.INDEX[3])} style={styles.bottomLeftR}>
                 <Animated.View style={[styles.clickable, styles.bottomLeftR, styles.blue, { opacity: this.animations[3] }]} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[4])} style={styles.bottomRightR}>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => this.onPressclickableView(this.INDEX[4])} style={styles.bottomRightR}>
                 <Animated.View style={[styles.clickable, styles.bottomRightR, styles.yellow, { opacity: this.animations[4] }]} />
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             </View>
           </View>
 
