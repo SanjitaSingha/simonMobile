@@ -184,7 +184,7 @@ animateView(Index) {
     console.log('The moves of the current Game: ', this.game.currentGame);
     let i = 0;
     let moves = setInterval(() => {
-      this.(this.game.currentGame[i]);
+      this.animateView(this.game.currentGame[i]);
       i++;
       if (i >= this.game.currentGame.length) {
         clearInterval(moves);
