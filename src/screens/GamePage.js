@@ -32,7 +32,7 @@ class GamePage extends Component {
   }
 
 onPressStrict() {
-  if (this.state.strictmode) {
+  if (this.state.strict) {
     this.setState({
       strict: false
     });
@@ -130,7 +130,7 @@ animateView(Index) {
       Animated.timing(
         this.animations[Index],
         {
-          toValue: 0,
+          toValue: 0.4,
           duration: 5,
         }
       ),
@@ -203,18 +203,18 @@ animateView(Index) {
         <View elevation={5} style={styles.wrapper}>
           <View style={styles.innerWrapper}>
             <View style={styles.flexRow}>
-              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[1])} style={[styles.topLeftR, styles.red]}>
+              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[1])} style={styles.topLeftR}>
                 <Animated.View style={[styles.clickable, styles.topLeftR, styles.red, { opacity: this.animations[1] }]} />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.topRightR, styles.green]} onPress={() => this.onPressclickableView(this.INDEX[2])}>
+              <TouchableOpacity style={styles.topRightR} onPress={() => this.onPressclickableView(this.INDEX[2])}>
                 <Animated.View style={[styles.clickable, styles.topRightR, styles.green, { opacity: this.animations[2] }]} />
               </TouchableOpacity>
             </View>
             <View style={styles.flexRow}>
-              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[3])} style={[styles.bottomLeftR, styles.blue]}>
+              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[3])} style={styles.bottomLeftR}>
                 <Animated.View style={[styles.clickable, styles.bottomLeftR, styles.blue, { opacity: this.animations[3] }]} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[4])} style={[styles.bottomRightR, styles.yellow]}>
+              <TouchableOpacity onPress={() => this.onPressclickableView(this.INDEX[4])} style={styles.bottomRightR}>
                 <Animated.View style={[styles.clickable, styles.bottomRightR, styles.yellow, { opacity: this.animations[4] }]} />
               </TouchableOpacity>
             </View>
